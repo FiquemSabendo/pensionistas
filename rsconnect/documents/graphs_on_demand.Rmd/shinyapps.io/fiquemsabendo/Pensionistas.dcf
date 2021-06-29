@@ -1,0 +1,12 @@
+name: Pensionistas
+title: Pensionistas
+username:
+account: fiquemsabendo
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3864832
+bundleId: 4766673
+url: https://fiquemsabendo.shinyapps.io/Pensionistas/
+when: 1624925923.61975
+asMultiple: FALSE
+asStatic: FALSE

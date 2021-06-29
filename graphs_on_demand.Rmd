@@ -16,123 +16,35 @@ library(viridis)
 library(stringr)
 library(tidyr)
 library(lubridate)
+library(readr)
 
-calcula_valor_constante <- function(df_dados_hist, data_constante ){
- #Argumentos
- #df_dados_hist: dataframe em que as duas primeiras colunas são formadas por uma data (Y-m-d) e um valor
- #data_constante: data para gerar valor constante. Formato da data: Y-m-d
- 
- #Por enquanto as datas estão limitadas à da série temporal baixada do IPCA Total do portal de dados abertos do BACEN
- #Essa série começa em 1992-01-01
-  
-  library(dplyr)
-  library(lubridate)
-  
-  names(df_dados_hist)[1:2]<- c("data","valor")
 
-  ###faz a conversão para real
-  df_dados_hist<-
-  df_dados_hist %>%
-    mutate(valor= case_when(
-      data>= ymd("1993-08-01") & data<= ymd("1994/02/28") ~ valor/(1000*2.75),
-      #data>= ymd("1992-01-01") & data<= ymd("1993/07/31") ~ valor/(1000^2*2.75),
-      #data>= ymd("1993-08-01") & data<= ymd("1994/06/30") ~ valor/(1000*2.75), #Adaptado para as necessidades da base que já converteu para real os valores a partir de 03/1994
-      
-      TRUE ~ valor 
-    ))
-  
-  #################Cálculos econômicos
-  #Dados do IPCA com a série temporal
-  
-  download.file("http://api.bcb.gov.br/dados/serie/bcdata.sgs.4449/dados?formato=csv", destfile = "bcdata.sgs.4449.csv")
-  
-  IPCA_historico <- read_delim("bcdata.sgs.4449.csv", 
-                               ";", escape_double = FALSE, locale = locale(decimal_mark = ",", 
-                                                                           grouping_mark = "."), trim_ws = TRUE)
-  IPCA_historico<-
-  IPCA_historico %>%
-    filter(data<= ymd(data_constante))
-  
-  #################Cálculos econômicos
-  #Calcula o número índice para todos os meses da série temporal
-  num_index<-
-    map_dbl(1:NROW(IPCA_historico), function(a_i){
-      if (a_i==1){
-        100
-      }else {
-        100+ prod(1+IPCA_historico$valor[1:a_i]/100)
-      }
-      
-    })
-  
-  IPCA_historico$num_indice <- num_index
-  
-  num_indice_constante<-
-    (IPCA_historico%>%
-    filter(dmy(data)== ymd(data_constante)))$num_indice
-  
-  
-  #################Cálculos econômicos
-  #Acrescenta a coluna do número índice
-  IPCA_historico$num_indice <- num_index
-  
-  IPCA_historico_trab<-
-    IPCA_historico %>%
-    mutate(data= dmy(data))  %>%
-    filter(data %in% df_dados_hist$data) %>%
-    select(data,num_indice)
-  
-  df_dados_hist %>%
-    inner_join(IPCA_historico_trab) %>%
-    mutate(valor = valor * (num_indice_constante/num_indice)) %>%
-    select(valor)
-  
-}
-
-df_graph<- readRDS(file="df_trabalho.rds")
-
-#df_graph <- df_graph[,-c(14:17)]
-
-# df_val_rendimento_bruto_atu<-calcula_valor_constante(df_graph[,c(1,8)],"2020-05-01" )
-# #names(df_val_rendimento_bruto_atu)[1]<- "Data Processamento"
-# names(df_val_rendimento_bruto_atu)[1]<- "total_rendimento_bruto_atu"
-# 
-# df_val_max_rendimento_bruto_atu<-calcula_valor_constante(df_graph[,c(1,9)],"2020-05-01" )
-# names(df_val_max_rendimento_bruto_atu)[1]<- "max_rendimento_bruto_atu"
-# #names(df_val_max_rendimento_bruto_atu)[2]<- "max_rendimento_bruto_atu"
-# 
-# df_val_total_rendimento_iquido_atu<-calcula_valor_constante(df_graph[,c(1,10)],"2020-05-01" )
-# names(df_val_total_rendimento_iquido_atu)[1]<- "total_rendimento_liquido_atu"
-# #names(df_val_total_rendimento_iquido_atu)[2]<- "total_rendimento_iquido_atu"
-# 
-# df_val_max_rendimento_liquido_atu<-calcula_valor_constante(df_graph[,c(1,11)],"2020-05-01" )
-# names(df_val_max_rendimento_liquido_atu)[1]<- "max_rendimento_liquido_atu"
-# #names(df_val_max_rendimento_liquido_atu)[2]<- "max_rendimento_liquido_atu"
-# 
-# df_graph<-
-# df_graph %>%
-#   bind_cols(df_val_max_rendimento_bruto_atu,
-#             df_val_max_rendimento_liquido_atu,
-#             df_val_rendimento_bruto_atu,
-#             df_val_total_rendimento_iquido_atu)
-# 
-# df_trabalho<- df_graph
-# 
-# saveRDS(df_trabalho, "df_trabalho.rds")
-#df_trabalho %>% filter(is.na(`NATUREZA PENSAO`))
-
-#df_trabalho %>% filter(is.na(tipo_prazo))
+# df_graph<- readRDS(file="df_trabalho.rds")
+df_graph <- read_csv(
+    "202102-202001_Pensionistas_DEFESA_FBarbalhoApp.csv", 
+    col_types = cols(
+        total_rendimento_bruto = col_number(), 
+        max_rendimento_bruto = col_number(), 
+        total_rendimento_iquido = col_number(), 
+        max_rendimento_liquido = col_number(), 
+        min_data_inicio_beneficio = col_date(format = "%Y-%m-%d"), 
+        quantidade = col_integer(),
+        `Data Processamento` = col_date(format = "%Y-%m-%d")
+    )
+)
 
 
 df_graph<- 
   df_graph %>%
-  mutate(`TIPO PENSAO`= str_replace_all(`TIPO PENSAO`, "[^[A-Za-z0-9/%,]]", " ") %>% str_squish(.)  %>% str_replace_all(.," , ", ", "),
-         `TIPO DE BENEFICIARIO` = ifelse(is.na(`TIPO DE BENEFICIARIO`),"NAO INFORMADO",`TIPO DE BENEFICIARIO`),
-         faixa_etaria = ifelse(is.na(faixa_etaria), "Nao calculada", faixa_etaria),
-         `NATUREZA PENSAO`= ifelse(is.na(`NATUREZA PENSAO`), "NAO INFORMADO", `NATUREZA PENSAO`),
-         tipo_prazo = ifelse(is.na(tipo_prazo), "NAO INFORMADO", tipo_prazo),
-         `TIPO PENSAO` = ifelse(is.na(`TIPO PENSAO`), "NAO INFORMADO", `TIPO PENSAO`)
-         )
+  mutate(
+    # `TIPO PENSAO`= str_replace_all(`TIPO PENSAO`, "[^[A-Za-z0-9/%,]]", " ") %>% str_squish(.)  %>% str_replace_all(.," , ", ", "),
+    `TIPO DE BENEFICIARIO` = ifelse(is.na(`TIPO DE BENEFICIARIO`),"NAO INFORMADO",`TIPO DE BENEFICIARIO`),
+    # faixa_etaria = ifelse(is.na(faixa_etaria), "Nao calculada", faixa_etaria),
+    # `NATUREZA PENSAO`= ifelse(is.na(`NATUREZA PENSAO`), "NAO INFORMADO", `NATUREZA PENSAO`),
+    # tipo_prazo = ifelse(is.na(tipo_prazo), "NAO INFORMADO", tipo_prazo),
+    # `TIPO PENSAO` = ifelse(is.na(`TIPO PENSAO`), "NAO INFORMADO", `TIPO PENSAO`),
+    `CARGO DO INSTITUIDOR` = ifelse(is.na(`CARGO DO INSTITUIDOR`), "NAO INFORMADO", `CARGO DO INSTITUIDOR`),
+)
 
 
   
@@ -186,10 +98,10 @@ tipo_grafico<- c("Barra", "Linha", "Ponto")
 
 dateRangeInput("data",
                   "Data processamento",
-                  min = "1994-01-01",
-                  max = "2020-05-01",
-                  start = "2020-05-01",
-                  end = "2020-05-01",
+                  min = "2020-01-01",
+                  max = "2021-02-01",
+                  start = "2021-02-01",
+                  end = "2021-02-01",
                   language = "pt-BR",
                   startview ="year",
                   format="dd/mm/yyyy",
@@ -198,8 +110,6 @@ dateRangeInput("data",
  
 
 
-
-# selectInput("doencas","Doenças Respiratorias (default:Todas)",choices = choices_doencas, selected = "Todas Doenças Respiratórias", multiple =  TRUE)
 
 selectInput ("var_h","Escolha a variável para eixo horizontal", choices =get_categoric_variables(df_graph), selected = get_categoric_variables(df_graph)[1] ,multiple = FALSE)
 
@@ -210,7 +120,7 @@ selectInput ("var_op","Que operação você deseja fazer com a variável do eixo
 
 selectInput ("var_fill","Escolha a variável para preencher a barra", choices =get_categoric_variables(df_graph) ,selected = get_numeric_variables(df_graph)[1],multiple = FALSE)
 
-selectInput ("var_filtro","Selecione tipos de beneficiários", choices = get_choices(df_graph) ,selected = "Tudo",multiple = TRUE)
+selectInput ("var_filtro","Selecione tipos de beneficiários", choices = get_choices(df_graph), selected = "Tudo", multiple = TRUE)
 
 #radioButtons("tp_graph","Escolha o tipo de gráfico", choices =tipo_grafico, selected = tipo_grafico[1])
 
