@@ -348,10 +348,10 @@ library(stringr)
 
 dateRangeInput("data_st",
                   "Intervalo da série",
-                  min = "1994-01-01",
-                  max = "2020-05-01",
-                  start = "1994-01-01",
-                  end = "2020-05-01",
+                  min = "2020-01-01",
+                  max = "2021-02-01",
+                  start = "2020-01-01",
+                  end = "2021-02-01",
                   language = "pt-BR",
                   startview ="year",
                   format="dd/mm/yyyy",
@@ -359,7 +359,7 @@ dateRangeInput("data_st",
       )
 
 
-selectInput ("var_v_st","Escolha a variável para eixo vertical", choices =get_numeric_variables(df_graph), selected = get_numeric_variables(df_graph)[1] ,multiple = FALSE)
+selectInput ("var_v_st","Escolha a variável para eixo vertical", choices =get_numeric_variables(df_graph), selected = get_numeric_variables(df_graph)[1], multiple = FALSE)
 
 selectInput ("var_op_st","Que operação você deseja fazer com a variável do eixo vertical?", choices = c("Soma","Média","Mediana", "Máximo"), selected = "Soma" ,multiple = FALSE)
 
