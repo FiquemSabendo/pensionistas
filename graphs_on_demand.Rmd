@@ -184,7 +184,7 @@ renderPlot({
     if(var_fill == varh ) {
         df_graph_bar <-
         df_graph_bar %>%
-        group_by(!!sym(varh))) %>%
+        group_by(!!sym(varh)) %>%
         summarise(
         VD = case_when(
           input$var_op == "Soma" ~ sum(as.numeric(!!sym(varv)),na.rm = TRUE),
