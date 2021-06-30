@@ -181,20 +181,39 @@ renderPlot({
     print(input$var_op )
     print(varv)
     
-
-    df_graph_bar <-
-      df_graph_bar %>%
-      group_by(!!sym(varh), !!sym(var_fill)) %>%
-      summarise(
-       VD = case_when(
+    if(var_fill == varh ) {
+        df_graph_bar <-
+        df_graph_bar %>%
+        group_by(!!sym(varh))) %>%
+        summarise(
+        VD = case_when(
           input$var_op == "Soma" ~ sum(as.numeric(!!sym(varv)),na.rm = TRUE),
           input$var_op == "Média" ~ mean(as.numeric(!!sym(varv)),na.rm = TRUE),
           input$var_op == "Mediana" ~ median(as.numeric(!!sym(varv)),na.rm = TRUE),
           input$var_op == "Máximo" ~ max(as.numeric(!!sym(varv),na.rm = TRUE)))
       
         
-      )%>%
-      ungroup() 
+        )%>%
+        ungroup() 
+
+    
+    
+    } else{
+        df_graph_bar <-
+        df_graph_bar %>%
+        group_by(!!sym(varh), !!sym(var_fill)) %>%
+        summarise(
+        VD = case_when(
+          input$var_op == "Soma" ~ sum(as.numeric(!!sym(varv)),na.rm = TRUE),
+          input$var_op == "Média" ~ mean(as.numeric(!!sym(varv)),na.rm = TRUE),
+          input$var_op == "Mediana" ~ median(as.numeric(!!sym(varv)),na.rm = TRUE),
+          input$var_op == "Máximo" ~ max(as.numeric(!!sym(varv),na.rm = TRUE)))
+      
+        
+        )%>%
+        ungroup() 
+
+    }
       #saveRDS(df_graph_bar, "df_graph_bar.rds")
     
     
