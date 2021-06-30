@@ -17,11 +17,10 @@ library(stringr)
 library(tidyr)
 library(lubridate)
 library(readr)
-
-
 # df_graph<- readRDS(file="df_trabalho.rds")
 df_graph <- read_csv(
-    "202102-202001_Pensionistas_DEFESA_FBarbalhoApp.csv", 
+    "https://raw.githubusercontent.com/FiquemSabendo/pensionistas/master/202102-202001_Pensionistas_DEFESA_FBarbalhoApp.csv", 
+    #locale = locale(encoding = "UTF-8"),
     col_types = cols(
         total_rendimento_bruto = col_number(), 
         max_rendimento_bruto = col_number(), 
@@ -32,8 +31,6 @@ df_graph <- read_csv(
         `Data Processamento` = col_date(format = "%Y-%m-%d")
     )
 )
-
-
 df_graph<- 
   df_graph %>%
   mutate(
@@ -45,18 +42,14 @@ df_graph<-
     # `TIPO PENSAO` = ifelse(is.na(`TIPO PENSAO`), "NAO INFORMADO", `TIPO PENSAO`),
     `CARGO DO INSTITUIDOR` = ifelse(is.na(`CARGO DO INSTITUIDOR`), "NAO INFORMADO", `CARGO DO INSTITUIDOR`),
 )
-
-
   
   
-
 get_choices<- function(df_trabalho){
   (df_trabalho %>%
      filter(!is.na(`TIPO DE BENEFICIARIO`)) %>%
      mutate(`TIPO DE BENEFICIARIO`= stringr::str_remove_all(`TIPO DE BENEFICIARIO`,"\\xe3")) %>%
     distinct(`TIPO DE BENEFICIARIO`))$`TIPO DE BENEFICIARIO`
 }
-
 get_categoric_variables<- function(df_trabalho){
   
   classe<-sapply(df_trabalho, class)
@@ -64,8 +57,6 @@ get_categoric_variables<- function(df_trabalho){
   names(df_trabalho)[classe =="character"]
   
 }
-
-
 get_numeric_variables<- function(df_trabalho){
   
   classe<-sapply(df_trabalho, class)
@@ -73,7 +64,6 @@ get_numeric_variables<- function(df_trabalho){
   names(df_graph)[classe %in% c("numeric", "integer")]
   
 }
-
 get_date_variables <- function(df_trabalho){
   
   classe<-sapply(df_trabalho, class)
@@ -81,7 +71,6 @@ get_date_variables <- function(df_trabalho){
   names(df_graph)[classe == "Date"]
   
 }
-
 ```
 
 Análises de ranking
@@ -93,9 +82,7 @@ Inputs {.sidebar}
 
 ```{r}
 library(stringr)
-
 tipo_grafico<- c("Barra", "Linha", "Ponto")
-
 dateRangeInput("data",
                   "Data processamento",
                   min = "2020-01-01",
@@ -108,26 +95,13 @@ dateRangeInput("data",
                   separator = "até"
       )
  
-
-
-
 selectInput ("var_h","Escolha a variável para eixo horizontal", choices =get_categoric_variables(df_graph), selected = get_categoric_variables(df_graph)[1] ,multiple = FALSE)
-
 selectInput ("var_v","Escolha a variável para eixo vertical", choices =get_numeric_variables(df_graph), selected = get_numeric_variables(df_graph)[1] ,multiple = FALSE)
-
 selectInput ("var_op","Que operação você deseja fazer com a variável do eixo vertical?", choices = c("Soma","Média","Mediana", "Máximo"), selected = "Soma" ,multiple = FALSE)
-
-
 selectInput ("var_fill","Escolha a variável para preencher a barra", choices =get_categoric_variables(df_graph) ,selected = get_numeric_variables(df_graph)[1],multiple = FALSE)
-
 selectInput ("var_filtro","Selecione tipos de beneficiários", choices = get_choices(df_graph), selected = "Tudo", multiple = TRUE)
-
 #radioButtons("tp_graph","Escolha o tipo de gráfico", choices =tipo_grafico, selected = tipo_grafico[1])
-
 checkboxInput("rotate","Rotacionar eixo", value = TRUE)
-
-
-
 ```
 
 
@@ -139,7 +113,6 @@ Column {.tabset .tabset-fade}
 ```{r}
 renderPlot({
   
-
   
   if(is.null(input$var_filtro)){
     tipo_sel<- get_choices(df_graph)
@@ -195,7 +168,6 @@ renderPlot({
         
         )%>%
         ungroup() 
-
     
     
     } else{
@@ -212,7 +184,6 @@ renderPlot({
         
         )%>%
         ungroup() 
-
     }
       #saveRDS(df_graph_bar, "df_graph_bar.rds")
     
@@ -264,7 +235,6 @@ renderPlot({
   
   
 })
-
 ```
 
 
@@ -315,39 +285,59 @@ renderDataTable({
     print(varv)
     
     
-    df_graph_bar <-
-      df_graph_bar %>%
-      group_by(!!sym(varh), !!sym(var_fill)) %>%
-      summarise(
+    if(var_fill == varh ) {
+        df_graph_bar <-
+        df_graph_bar %>%
+        group_by(!!sym(varh)) %>%
+        summarise(
         VD = case_when(
           input$var_op == "Soma" ~ sum(as.numeric(!!sym(varv)),na.rm = TRUE),
           input$var_op == "Média" ~ mean(as.numeric(!!sym(varv)),na.rm = TRUE),
           input$var_op == "Mediana" ~ median(as.numeric(!!sym(varv)),na.rm = TRUE),
           input$var_op == "Máximo" ~ max(as.numeric(!!sym(varv),na.rm = TRUE)))
+      
         
+        )%>%
+        ungroup() 
+    
+    
+    } else{
+        df_graph_bar <-
+        df_graph_bar %>%
+        group_by(!!sym(varh), !!sym(var_fill)) %>%
+        summarise(
+        VD = case_when(
+          input$var_op == "Soma" ~ sum(as.numeric(!!sym(varv)),na.rm = TRUE),
+          input$var_op == "Média" ~ mean(as.numeric(!!sym(varv)),na.rm = TRUE),
+          input$var_op == "Mediana" ~ median(as.numeric(!!sym(varv)),na.rm = TRUE),
+          input$var_op == "Máximo" ~ max(as.numeric(!!sym(varv),na.rm = TRUE)))
+      
         
-      )%>%
-      ungroup() 
+        )%>%
+        ungroup() 
+    }
     #saveRDS(df_graph_bar, "df_graph_bar.rds")
     
     
   }
   
+
   
-  DT::datatable(
-    
+  #print(df_graph_bar)
+  
+  datatable(
     df_graph_bar,
     filter = "top",
     rownames = FALSE,
     fillContainer = TRUE,
-    
+
     extensions = 'Buttons', options = list(
       dom = 'Bfrtip',
       #columnDefs = list(list(targets = c(-13), searchable = TRUE)),
       pageLength = NROW(df_graph_bar),
       buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
     )
-  ) %>% formatRound(ifelse(NCOL(df_graph_bar)==2,2,3),digits = 2, mark=".", dec.mark= ",")%>% formatDate(c(6,11,12),  method =  "toLocaleDateString") 
+  ) %>% formatRound(ifelse(NCOL(df_graph_bar)==2,2,3),digits = 2, mark=".", dec.mark= ",")
   
   
 })
@@ -363,8 +353,6 @@ Inputs {.sidebar}
 
 ```{r}
 library(stringr)
-
-
 dateRangeInput("data_st",
                   "Intervalo da série",
                   min = "2020-01-01",
@@ -376,18 +364,10 @@ dateRangeInput("data_st",
                   format="dd/mm/yyyy",
                   separator = "até"
       )
-
-
 selectInput ("var_v_st","Escolha a variável para eixo vertical", choices =get_numeric_variables(df_graph), selected = get_numeric_variables(df_graph)[1], multiple = FALSE)
-
 selectInput ("var_op_st","Que operação você deseja fazer com a variável do eixo vertical?", choices = c("Soma","Média","Mediana", "Máximo"), selected = "Soma" ,multiple = FALSE)
-
-
 selectInput ("var_group","Escolha a variável para agrupamento", choices =c("Nenhuma",get_categoric_variables(df_graph)) ,selected = "Nenhuma",multiple = FALSE)
-
-
 selectInput ("var_filtro_st","Selecione tipos de beneficiários", choices = get_choices(df_graph) ,selected = "tudo",multiple = TRUE)
-
 ```
 
 Column {.tabset .tabset-fade}
@@ -398,12 +378,9 @@ Column {.tabset .tabset-fade}
 #library(plotly)
 library(dygraphs)
 library(stats)
-
-
 renderDygraph({
   
   library(dygraphs)
-
   if(is.null(input$var_filtro_st)){
     tipo_sel<- get_choices(df_graph)
   } else{
@@ -459,14 +436,11 @@ renderDygraph({
   
   mes_fim<- as.numeric(substr(input$data_st[2],6,7))
   ano_fim<- as.numeric(substr(input$data_st[2],1,4))
-
   
     
   ts_pensao<- ts(df_dygraph[,-1],start = c(ano_ini,mes_ini),end = c(ano_fim,mes_fim),frequency = 12)
-
   #df_dygraph <- data.frame(df_dygraph)
   
-
   
     dygraph(ts_pensao,main= title, width="100%") %>%
     dyRangeSelector() %>%
@@ -479,7 +453,6 @@ renderDygraph({
   
   
 })
-
 # renderPlotly({
 # 
 # 
@@ -532,7 +505,6 @@ renderDygraph({
 # 
 # 
 # })
-
 ```
 
 ### Manipule os dados de seu filtro
@@ -587,7 +559,7 @@ renderDataTable({
       pageLength = NROW(df_dygraph),
       buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
     )
-  ) %>% formatRound(ifelse(NCOL(df_dygraph)==2,2,3),digits = 2, mark=".", dec.mark= ",")%>% formatDate(c(6,11,12),  method =  "toLocaleDateString") 
+  ) %>% formatRound(ifelse(NCOL(df_dygraph)==2,2,3),digits = 2, mark=".", dec.mark= ",")%>% formatDate(c(1),  method =  "toLocaleDateString") 
   
   
 })
