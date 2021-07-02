@@ -47,7 +47,7 @@ df_graph<-
 get_choices<- function(df_trabalho){
   (df_trabalho %>%
      filter(!is.na(`TIPO DE BENEFICIARIO`)) %>%
-     mutate(`TIPO DE BENEFICIARIO`= stringr::str_remove_all(`TIPO DE BENEFICIARIO`,"\\xe3")) %>%
+     #mutate(`TIPO DE BENEFICIARIO`= stringr::str_remove_all(`TIPO DE BENEFICIARIO`,"\\xe3")) %>%
     distinct(`TIPO DE BENEFICIARIO`))$`TIPO DE BENEFICIARIO`
 }
 get_categoric_variables<- function(df_trabalho){
@@ -73,6 +73,7 @@ get_date_variables <- function(df_trabalho){
 }
 ```
 
+
 Análises de ranking
 =====================================  
 
@@ -97,7 +98,7 @@ dateRangeInput("data",
  
 selectInput ("var_h","Escolha a variável para eixo horizontal", choices =get_categoric_variables(df_graph), selected = get_categoric_variables(df_graph)[1] ,multiple = FALSE)
 selectInput ("var_v","Escolha a variável para eixo vertical", choices =get_numeric_variables(df_graph), selected = get_numeric_variables(df_graph)[1] ,multiple = FALSE)
-selectInput ("var_op","Que operação você deseja fazer com a variável do eixo vertical?", choices = c("Soma","Média","Mediana", "Máximo"), selected = "Soma" ,multiple = FALSE)
+selectInput ("var_op","Que operação você deseja fazer com a variável do eixo vertical? (Média= Média por pensionistas para os rendimentos e média da categoria para quantidade)", choices = c("Soma","Média","Mediana da categoria", "Máximo"), selected = "Soma" ,multiple = FALSE)
 selectInput ("var_fill","Escolha a variável para preencher a barra", choices =get_categoric_variables(df_graph) ,selected = get_numeric_variables(df_graph)[1],multiple = FALSE)
 selectInput ("var_filtro","Selecione tipos de beneficiários", choices = get_choices(df_graph), selected = "Tudo", multiple = TRUE)
 #radioButtons("tp_graph","Escolha o tipo de gráfico", choices =tipo_grafico, selected = tipo_grafico[1])
@@ -134,12 +135,16 @@ renderPlot({
   
   
   
+  print(unique(df_graph$`TIPO DE BENEFICIARIO`))
+  
   df_graph_bar <-
     df_graph %>%
-    mutate(`TIPO DE BENEFICIARIO`= stringr::str_remove_all(`TIPO DE BENEFICIARIO`,"\\xe3")) %>%
+    #mutate(`TIPO DE BENEFICIARIO`= stringr::str_replace_all(`TIPO DE BENEFICIARIO`,"\\xe3")) %>%
     filter(`Data Processamento`>= input$data[1] & `Data Processamento`<= input$data[2],
            #!!sym(varh) %in% var_sel$selected,
            `TIPO DE BENEFICIARIO` %in% tipo_sel)
+  
+  #print(df_graph_bar$`TIPO DE BENEFICIARIO`)
   
   if (input$var_op == "Nenhuma"){
     
@@ -151,8 +156,11 @@ renderPlot({
       select(!!sym(varh), !!sym(var_fill),VD)
     
   } else {
-    print(input$var_op )
+    print("input$varv gráfico por barra var_fill != varh" )
     print(varv)
+    
+    print(input$var_op == "Média"|| varv=="quantidade")
+    print(input$var_op == "Média"| varv=="quantidade")
     
     if(var_fill == varh ) {
         df_graph_bar <-
@@ -161,8 +169,9 @@ renderPlot({
         summarise(
         VD = case_when(
           input$var_op == "Soma" ~ sum(as.numeric(!!sym(varv)),na.rm = TRUE),
-          input$var_op == "Média" ~ mean(as.numeric(!!sym(varv)),na.rm = TRUE),
-          input$var_op == "Mediana" ~ median(as.numeric(!!sym(varv)),na.rm = TRUE),
+          input$var_op == "Média" & varv!="quantidade" ~ sum(as.numeric(!!sym(varv)),na.rm = TRUE)/sum(as.numeric(quantidade),na.rm = TRUE),
+          input$var_op == "Média"& varv=="quantidade" ~ mean(as.numeric(!!sym(varv)),na.rm = TRUE),
+          input$var_op == "Mediana da categoria" ~ median(as.numeric(!!sym(varv)),na.rm = TRUE),
           input$var_op == "Máximo" ~ max(as.numeric(!!sym(varv),na.rm = TRUE)))
       
         
@@ -171,14 +180,18 @@ renderPlot({
     
     
     } else{
+      print("input$var_op gráfico por barra var_fill != varh")
+      print(input$var_op)
+      
         df_graph_bar <-
         df_graph_bar %>%
         group_by(!!sym(varh), !!sym(var_fill)) %>%
         summarise(
         VD = case_when(
           input$var_op == "Soma" ~ sum(as.numeric(!!sym(varv)),na.rm = TRUE),
-          input$var_op == "Média" ~ mean(as.numeric(!!sym(varv)),na.rm = TRUE),
-          input$var_op == "Mediana" ~ median(as.numeric(!!sym(varv)),na.rm = TRUE),
+          input$var_op == "Média" & varv!="quantidade" ~ sum(as.numeric(!!sym(varv)),na.rm = TRUE)/sum(as.numeric(quantidade),na.rm = TRUE),
+          input$var_op == "Média"& varv=="quantidade" ~ sum(as.numeric(!!sym(varv)),na.rm = TRUE)/sum(as.numeric(quantidade),na.rm = TRUE),
+          input$var_op == "Mediana da categoria" ~ median(as.numeric(!!sym(varv)),na.rm = TRUE),
           input$var_op == "Máximo" ~ max(as.numeric(!!sym(varv),na.rm = TRUE)))
       
         
@@ -266,7 +279,7 @@ renderDataTable({
   
   df_graph_bar <-
     df_graph %>%
-    mutate(`TIPO DE BENEFICIARIO`= stringr::str_remove_all(`TIPO DE BENEFICIARIO`,"\\xe3")) %>%
+    #mutate(`TIPO DE BENEFICIARIO`= stringr::str_remove_all(`TIPO DE BENEFICIARIO`,"\\xe3")) %>%
     filter(`Data Processamento`>= input$data[1] & `Data Processamento`<= input$data[2],
            #!!sym(varh) %in% var_sel$selected,
            `TIPO DE BENEFICIARIO` %in% tipo_sel)
@@ -292,7 +305,8 @@ renderDataTable({
         summarise(
         VD = case_when(
           input$var_op == "Soma" ~ sum(as.numeric(!!sym(varv)),na.rm = TRUE),
-          input$var_op == "Média" ~ mean(as.numeric(!!sym(varv)),na.rm = TRUE),
+          input$var_op == "Média" & varv!="quantidade" ~ sum(as.numeric(!!sym(varv)),na.rm = TRUE)/sum(as.numeric(quantidade),na.rm = TRUE),
+          input$var_op == "Média"& varv=="quantidade" ~ mean(as.numeric(!!sym(varv)),na.rm = TRUE),
           input$var_op == "Mediana" ~ median(as.numeric(!!sym(varv)),na.rm = TRUE),
           input$var_op == "Máximo" ~ max(as.numeric(!!sym(varv),na.rm = TRUE)))
       
@@ -302,13 +316,18 @@ renderDataTable({
     
     
     } else{
+      
+        print("input$varv")
+        print(input$varv)
+        
         df_graph_bar <-
         df_graph_bar %>%
         group_by(!!sym(varh), !!sym(var_fill)) %>%
         summarise(
         VD = case_when(
           input$var_op == "Soma" ~ sum(as.numeric(!!sym(varv)),na.rm = TRUE),
-          input$var_op == "Média" ~ mean(as.numeric(!!sym(varv)),na.rm = TRUE),
+          input$var_op == "Média" & varv!="quantidade" ~ sum(as.numeric(!!sym(varv)),na.rm = TRUE)/sum(as.numeric(quantidade),na.rm = TRUE),
+          input$var_op == "Média"& varv=="quantidade" ~ mean(as.numeric(!!sym(varv)),na.rm = TRUE),          
           input$var_op == "Mediana" ~ median(as.numeric(!!sym(varv)),na.rm = TRUE),
           input$var_op == "Máximo" ~ max(as.numeric(!!sym(varv),na.rm = TRUE)))
       
@@ -365,19 +384,23 @@ dateRangeInput("data_st",
                   separator = "até"
       )
 selectInput ("var_v_st","Escolha a variável para eixo vertical", choices =get_numeric_variables(df_graph), selected = get_numeric_variables(df_graph)[1], multiple = FALSE)
-selectInput ("var_op_st","Que operação você deseja fazer com a variável do eixo vertical?", choices = c("Soma","Média","Mediana", "Máximo"), selected = "Soma" ,multiple = FALSE)
+selectInput ("var_op_st","Que operação você deseja fazer com a variável do eixo vertical? (Média= Média por pensionistas para os rendimentos e média da categoria para quantidade)", choices = c("Soma","Média","Mediana", "Máximo"), selected = "Soma" ,multiple = FALSE)
 selectInput ("var_group","Escolha a variável para agrupamento", choices =c("Nenhuma",get_categoric_variables(df_graph)) ,selected = "Nenhuma",multiple = FALSE)
 selectInput ("var_filtro_st","Selecione tipos de beneficiários", choices = get_choices(df_graph) ,selected = "tudo",multiple = TRUE)
+sliderInput("num_elementos","Escolha o número de elementos a exibir no gráfico pelo ranking",1,100,10)
 ```
 
 Column {.tabset .tabset-fade}
 -----------------------------------------------------------------------
 ### Construa a sua série temporal
 
+
+
 ```{r}
 #library(plotly)
 library(dygraphs)
 library(stats)
+
 renderDygraph({
   
   library(dygraphs)
@@ -395,24 +418,61 @@ renderDygraph({
   
   varv<- input$var_v_st
   
+  df_slice<-
+  df_graph %>%
+    #mutate(`TIPO DE BENEFICIARIO`= stringr::str_remove_all(`TIPO DE BENEFICIARIO`,"\\xe3")) %>%
+    filter((`Data Processamento` >= input$data_st[1] & `Data Processamento`<= input$data_st[2]),
+           `TIPO DE BENEFICIARIO` %in% tipo_sel) %>%
+    group_by(!!sym(var_group)) %>%
+    summarise(
+      
+      #total= sum(!!sym(varv),na.rm = TRUE)
+      VD = case_when(
+        input$var_op_st == "Soma" ~ sum(as.numeric(!!sym(varv)),na.rm = TRUE),
+          input$var_op_st == "Média" & varv!="quantidade" ~ sum(as.numeric(!!sym(varv)),na.rm = TRUE)/sum(as.numeric(quantidade),na.rm = TRUE),
+          input$var_op_st == "Média"& varv=="quantidade" ~ mean(as.numeric(!!sym(varv)),na.rm = TRUE),        
+        input$var_op_st == "Mediana" ~ median(as.numeric(!!sym(varv)),na.rm = TRUE),
+        input$var_op_st == "Máximo" ~ max(as.numeric(!!sym(varv),na.rm = TRUE)))
+    )%>%
+    mutate(VD = trunc(VD)) %>%
+    ungroup() %>%
+    slice_max(order_by = VD, n=input$num_elementos) %>%
+    select(1)
+  
+  names(df_slice)[1] <-"var_filtro_grupo"
+  
+  filtro_grupo<- df_slice$var_filtro_grupo
+ 
+  print("filtro_grupo")
+  print(filtro_grupo)
+  
+  
+  
+  # if (var_group=="TIPO DE BENEFICIARIO" | is.null(input$var_filtro_st)){
+  #   filtro_grupo<-tipo_sel
+  #     print("filtro_grupo")
+  # print(filtro_grupo)
+  # }
   
   df_dygraph<-
   df_graph %>%
-    mutate(`TIPO DE BENEFICIARIO`= stringr::str_remove_all(`TIPO DE BENEFICIARIO`,"\\xe3")) %>%
+    #mutate(`TIPO DE BENEFICIARIO`= stringr::str_remove_all(`TIPO DE BENEFICIARIO`,"\\xe3")) %>%
     filter((`Data Processamento` >= input$data_st[1] & `Data Processamento`<= input$data_st[2]),
-           `TIPO DE BENEFICIARIO` %in% tipo_sel) %>%
+           `TIPO DE BENEFICIARIO` %in% tipo_sel,
+           !!sym(var_group) %in% filtro_grupo) %>%
     group_by(`Data Processamento`, !!sym(var_group)) %>%
     summarise(
       
       #total= sum(!!sym(varv),na.rm = TRUE)
       VD = case_when(
         input$var_op_st == "Soma" ~ sum(as.numeric(!!sym(varv)),na.rm = TRUE),
-        input$var_op_st == "Média" ~ mean(as.numeric(!!sym(varv)),na.rm = TRUE),
-        input$var_op_st == "Mediana" ~ median(as.numeric(!!sym(varv)),na.rm = TRUE),
+          input$var_op_st == "Média" & varv!="quantidade" ~ sum(as.numeric(!!sym(varv)),na.rm = TRUE)/sum(as.numeric(quantidade),na.rm = TRUE),
+          input$var_op_st == "Média"& varv=="quantidade" ~ mean(as.numeric(!!sym(varv)),na.rm = TRUE),        
+        input$var_op_st == "Médiana" ~ median(as.numeric(!!sym(varv)),na.rm = TRUE),
         input$var_op_st == "Máximo" ~ max(as.numeric(!!sym(varv),na.rm = TRUE)))
     )%>%
     mutate(VD = trunc(VD)) %>%
-    ungroup() 
+    ungroup()   
   
     max_value<- max(df_dygraph$VD)
     
@@ -423,7 +483,7 @@ renderDygraph({
     }
   
     df_dygraph<-
-    df_dygraph %>%  
+    df_dygraph %>%
     spread(!!sym(var_group),VD) 
     
   
@@ -446,10 +506,18 @@ renderDygraph({
     dyRangeSelector() %>%
     dyAxis(name= 'y', 
               valueFormatter = 'function(d){return d.toString().replace(/\\B(?=(\\d{3})+(?!\\d))/g, ".");}', axisLabelFormatter = 'function(d){return d.toString().replace(/\\B(?=(\\d{3})+(?!\\d))/g, ".");}') %>% #,valueRange = c(y_min,y_max*1.05)
-    #dyLegend(show = 'follow', hideOnMouseOut = TRUE)%>%
+    dyLegend(show = 'always', hideOnMouseOut = TRUE)%>%
     dyOptions(connectSeparatedPoints = TRUE, maxNumberWidth = 30)%>%
     dyOptions( drawGrid = FALSE) %>%
-    dyHighlight(highlightCircleSize = 5)
+    dyHighlight(highlightCircleSize = 5) %>%
+        dyHighlight(highlightCircleSize = 5, 
+                highlightSeriesBackgroundAlpha = 0.4,
+                hideOnMouseOut = FALSE,
+                highlightSeriesOpts = list(strokeWidth = 3)) %>%
+    dyCSS(textConnection( "
+     .dygraph-legend > span.highlight { background-color: #B0B0B0; }
+     
+  "))  
   
   
 })
@@ -510,6 +578,9 @@ renderDygraph({
 ### Manipule os dados de seu filtro
 ```{r}
 library(DT)
+
+
+
 renderDataTable({
   
   if(is.null(input$var_filtro_st)){
@@ -526,10 +597,9 @@ renderDataTable({
   
   varv<- input$var_v_st
   
-  
   df_dygraph<-
     df_graph %>%
-    mutate(`TIPO DE BENEFICIARIO`= stringr::str_remove_all(`TIPO DE BENEFICIARIO`,"\\xe3")) %>%
+    #mutate(`TIPO DE BENEFICIARIO`= stringr::str_remove_all(`TIPO DE BENEFICIARIO`,"\\xe3")) %>%
     filter((`Data Processamento` >= input$data_st[1] & `Data Processamento`<= input$data_st[2]),
            `TIPO DE BENEFICIARIO` %in% tipo_sel) %>%
     group_by(`Data Processamento`, !!sym(var_group)) %>%
@@ -538,14 +608,35 @@ renderDataTable({
       #total= sum(!!sym(varv),na.rm = TRUE)
       VD = case_when(
         input$var_op_st == "Soma" ~ sum(as.numeric(!!sym(varv)),na.rm = TRUE),
-        input$var_op_st == "Média" ~ mean(as.numeric(!!sym(varv)),na.rm = TRUE),
-        input$var_op_st == "Mediana" ~ median(as.numeric(!!sym(varv)),na.rm = TRUE),
+          input$var_op_st == "Média" & varv!="quantidade" ~ sum(as.numeric(!!sym(varv)),na.rm = TRUE)/sum(as.numeric(quantidade),na.rm = TRUE),
+          input$var_op_st == "Média"& varv=="quantidade" ~ mean(as.numeric(!!sym(varv)),na.rm = TRUE),        
+        input$var_op_st == "Médiana" ~ median(as.numeric(!!sym(varv)),na.rm = TRUE),
         input$var_op_st == "Máximo" ~ max(as.numeric(!!sym(varv),na.rm = TRUE)))
     )%>%
     mutate(VD = trunc(VD)) %>%
-    ungroup() 
+    ungroup()   
   
   
+  # df_dygraph<-
+  #   df_graph %>%
+  #   #mutate(`TIPO DE BENEFICIARIO`= stringr::str_remove_all(`TIPO DE BENEFICIARIO`,"\\xe3")) %>%
+  #   filter((`Data Processamento` >= input$data_st[1] & `Data Processamento`<= input$data_st[2]),
+  #          `TIPO DE BENEFICIARIO` %in% tipo_sel) %>%
+  #   group_by(`Data Processamento`, !!sym(var_group)) %>%
+  #   summarise(
+  #     
+  #     #total= sum(!!sym(varv),na.rm = TRUE)
+  #     VD = case_when(
+  #       input$var_op_st == "Soma" ~ sum(as.numeric(!!sym(varv)),na.rm = TRUE),
+  #         input$var_op_st == "Média" & varv!="quantidade" ~ sum(as.numeric(!!sym(varv)),na.rm = TRUE)/sum(as.numeric(quantidade),na.rm = TRUE),
+  #         input$var_op__st == "Média"& varv=="quantidade" ~ mean(as.numeric(!!sym(varv)),na.rm = TRUE),        
+  #       input$var_op_st == "Mediana" ~ median(as.numeric(!!sym(varv)),na.rm = TRUE),
+  #       input$var_op_st == "Máximo" ~ max(as.numeric(!!sym(varv),na.rm = TRUE)))
+  #   )%>%
+  #   mutate(VD = trunc(VD)) %>%
+  #   ungroup() 
+  
+
   DT::datatable(
     
     df_dygraph,
