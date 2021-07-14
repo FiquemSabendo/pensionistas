@@ -1,10 +1,16 @@
 # Metodologia
 
-Este aplicativo permite a visualização de informações relativas a pensões militares do Governo Federal. 
+Este repositório contém o código-fonte do [aplicativo](https://fiquemsabendo.shinyapps.io/Pensionistas/) que permite a visualização de informações relativas a pensões militares do Governo Federal. 
 
 Os dados utilizados são provenientes do [Portal da Transparência](http://transparencia.gov.br/download-de-dados/servidores). A responsabilidade pelo preenchimento dos dados é do Ministério da Defesa, que envia mensalmente as informações à Controladoria-Geral da União (CGU) para consolidação e disponibilização no formato utilizado no Portal.
 
-O código-fonte da aplicação e as consultas realizadas na base de dados podem ser acessadas [no GitHub](https://github.com/FIquemSabendo/pensionistas).
+## A história da divulgação das pensões militares e do aplicativo
+
+A divulgação dos valores pagos a pensionistas das Forças Armadas ocorreu um ano e meio após decisão do Tribunal de Contas da União determinando a abertura dos dados das pensões civis e militares pelo Governo Federal. O tribunal acolheu denúncia da [Fiquem Sabendo](https://fiquemsabendo.com.br/), agência de dados especializada na Lei de Acesso à Informação que [desde 2017 vinha tentando obter acesso a esses dados](https://fiquemsabendo.com.br/transparencia/denuncia-fiquem-sabendo-tcu-pensoes-militares/).
+
+Em julho de 2020, a Fiquem Sabendo obteve pela primeira vez a série histórica com 27 anos de pagamentos de pensão a parentes de servidores civis e a dependentes de militares de ex-territórios federais. Na ocasião, foi disponibilizada a primeira versão do aplicativo elaborado pelo cientista de dados [Fernando Barbalho](https://twitter.com/barbalhofernand), utilizando apenas os dados parciais de militares então disponibilizados pelo Ministério da Defesa.
+
+Com a divulgação dos dados completos pela CGU, o aplicativo foi atualizado para refletir os valores repassados mensalmente a todos os pensionistas das Forças Armadas, desde o início da nova série histórica. Também foram adicionadas novas ferramentas para consultar os dados individualizados por pensionista e a seção de metodologia. O trabalho contou com a colaboração técnica de Fernando Barbalho e com a contribuição do [Brasil.io](https://brasil.io/) para o processamento dos dados e infraestrutura.
 
 ## Transformações aplicadas nos dados
 
@@ -32,14 +38,6 @@ Para garantir a correspondência entre os dados de cadastro e de remuneração m
 Para lidar com os casos em que há mais de um registro para o mesmo pensionista na tabela de cadastro (o pensionista tem múltiplo vínculos), foi adicionada uma coluna específica na ferramenta que indica a existência de várias pensões. Nesses casos, **a remuneração _total_ do pensionista é indicada em cada uma das linhas, não devendo ser somada entre diferentes linhas**.
 
 Uma versão da base de dados dos pensionistas do Governo Federal em um arquivo único, incluindo as pensões civis e toda a série histórica publicada no Portal da Transparência, está disponível para download [neste link](https://drive.google.com/file/d/1e5W6fGJ5WsM_fxI18QK9JiHH-3F4sudq/view?usp=sharing).
-
-## A história da divulgação das pensões militares e do aplicativo
-
-A divulgação dos valores pagos a pensionistas das Forças Armadas ocorreu um ano e meio após decisão do Tribunal de Contas da União determinando a abertura dos dados das pensões civis e militares pelo Governo Federal. O tribunal acolheu denúncia da [Fiquem Sabendo](https://fiquemsabendo.com.br/), agência de dados especializada na Lei de Acesso à Informação que [desde 2017 vinha tentando obter acesso a esses dados](https://fiquemsabendo.com.br/transparencia/denuncia-fiquem-sabendo-tcu-pensoes-militares/).
-
-Em julho de 2020, a Fiquem Sabendo obteve pela primeira vez a série histórica com 27 anos de pagamentos de pensão a parentes de servidores civis e a dependentes de militares de ex-territórios federais. Na ocasião, foi disponibilizada a primeira versão do aplicativo elaborado pelo cientista de dados [Fernando Barbalho](https://twitter.com/barbalhofernand), utilizando apenas os dados parciais de militares então disponibilizados pelo Ministério da Defesa.
-
-Com a divulgação dos dados completos pela CGU, o aplicativo foi atualizado para refletir os valores repassados mensalmente a todos os pensionistas das Forças Armadas, desde o início da nova série histórica. Também foram adicionadas novas ferramentas para consultar os dados individualizados por pensionista e a seção de metodologia. O trabalho contou com a colaboração técnica de Fernando Barbalho e com a contribuição do [Brasil.io](https://brasil.io/) para o processamento dos dados e infraestrutura.
 
 ## Contato
 
