@@ -12,11 +12,19 @@ Em julho de 2020, a Fiquem Sabendo obteve pela primeira vez a série histórica 
 
 Com a divulgação dos dados completos pela CGU, o aplicativo foi atualizado para refletir os valores repassados mensalmente a todos os pensionistas das Forças Armadas, desde o início da nova série histórica. Também foram adicionadas novas ferramentas para consultar os dados individualizados por pensionista e a seção de metodologia. O trabalho contou com a colaboração técnica de Fernando Barbalho e com a contribuição do [Brasil.io](https://brasil.io/) para o processamento dos dados e infraestrutura.
 
+## Estrutura do repositório
+
+O arquivo [`graphs_on_demand.Rmd`](./graphs_on_demand.Rmd) contém as instruções em Rmarkdown para rodar a interface gráfica do aplicativo, por meio de uma ferramenta como o [shinnyapps.io](https://www.shinyapps.io/).
+
+A interface gráfica carrega os dados resumidos do Portal da Transparência da tabela [`202102-202001_Pensionistas_DEFESA_FBarbalhoApp.csv`](./202102-202001_Pensionistas_DEFESA_FBarbalhoApp.csv) (ver explicação sobre as transformações realizadas [abaixo](#tabela-com-valores-resumidos)). 
+
+Esses dados são retirados de um banco de dados PostgreSQL que importa os dados do Portal da Transparência após leitura e pré-processamento realizados com [este conjunto](https://github.com/turicas/transparencia-gov-br/tree/develop/pensionista) de scripts. A consulta para extração dos dados resumidos do banco de dados foi reproduzida com comentários no arquivo [`query_new.sql`](./query_new.sql).
+
 ## Transformações aplicadas nos dados
 
 ### Tabela com valores resumidos
 
-Para as ferramentas [`Análises de ranking`](https://fabdev.shinyapps.io/pensionistas_militares/#section-an%C3%A1lises-de-ranking) e [`Gráfico de análise de série temporal`](https://fabdev.shinyapps.io/pensionistas_militares/#section-gr%C3%A1fico-de-an%C3%A1lise-de-s%C3%A9rie-temporal), foi elaborada uma versão sintética dos dados disponibilizados no portal da transparência. Essa versão resumida contém:
+Para as ferramentas [`Análises de ranking`](https://fabdev.shinyapps.io/pensionistas_militares/#section-an%C3%A1lises-de-ranking) e [`Gráfico de análise de série temporal`](https://fabdev.shinyapps.io/pensionistas_militares/#section-gr%C3%A1fico-de-an%C3%A1lise-de-s%C3%A9rie-temporal), foi elaborada uma versão sintética dos dados disponibilizados no portal da transparência. Essa versão resumida contém: 
 
 - Todas as combinações de tipo de beneficiário (isto é, o vínculo entre beneficiário e servidor que instituiu a pensão), órgão e cargo do servidor instituidor, e quantidade de vínculos mantidos pelo pensionista, por mês do pagamento.
 - Estatísticas básicas dos valores pagos pela União a pensionistas de cada uma dessas combinações, incluindo:
