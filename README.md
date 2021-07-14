@@ -10,7 +10,7 @@ A divulgação dos valores pagos a pensionistas das Forças Armadas ocorreu um a
 
 Em julho de 2020, a Fiquem Sabendo obteve pela primeira vez a série histórica com 27 anos de pagamentos de pensão a parentes de servidores civis e a dependentes de militares de ex-territórios federais. Na ocasião, foi disponibilizada a primeira versão do aplicativo elaborado pelo cientista de dados [Fernando Barbalho](https://twitter.com/barbalhofernand), utilizando apenas os dados parciais de militares então disponibilizados pelo Ministério da Defesa.
 
-Com a divulgação dos dados completos pela CGU, o aplicativo foi atualizado para refletir os valores repassados mensalmente a todos os pensionistas das Forças Armadas, desde o início da nova série histórica. Também foram adicionadas novas ferramentas para consultar os dados individualizados por pensionista e a seção de metodologia. O trabalho contou com a colaboração técnica de Fernando Barbalho e com a contribuição do [Brasil.io](https://brasil.io/) para o processamento dos dados e infraestrutura.
+Com a divulgação dos dados completos pela CGU, o aplicativo foi atualizado para refletir os valores repassados mensalmente a todos os pensionistas das Forças Armadas, desde o início da nova série histórica. Também foram adicionadas novas ferramentas para consultar os dados individualizados por pensionista e a seção de metodologia. O trabalho contou com a colaboração técnica de Fernando Barbalho no desenvolvimento do aplicativo e com a contribuição do [Álvaro Justen](https://github.com/turicas)/[Brasil.io](https://brasil.io/) para o processamento dos dados e infraestrutura.
 
 ## Estrutura do repositório
 
