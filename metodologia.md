@@ -15,7 +15,7 @@ Para as ferramentas [`Análises de ranking`](https://fabdev.shinyapps.io/pension
   - Número de pensionistas que se encaixam em cada combinação;
   - Total pago a pensionistas dentro de cada combinação (bruto e líquido);
   - Máximo valor pago a um pensionista dentro de cada combinação (bruto e líquido);
-  - Data da pensão mais antiga dentro de cada combinação (bruto e líquido);
+  - Data da pensão mais antiga dentro de cada combinação;
 
 Nesse caso, pensionistas com mais de uma pensão militar tiveram apenas a sua remuneração consolidada considerada, sendo separados dos demais por meio da variável `NUMERO DE VINCULOS`.
 
