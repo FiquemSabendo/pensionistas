@@ -4,6 +4,8 @@ Este aplicativo permite a visualização de informações relativas a pensões m
 
 Os dados utilizados são provenientes do [Portal da Transparência](http://transparencia.gov.br/download-de-dados/servidores). A responsabilidade pelo preenchimento dos dados é do Ministério da Defesa, que envia mensalmente as informações à Controladoria-Geral da União (CGU) para consolidação e disponibilização no formato utilizado no Portal.
 
+O código-fonte da aplicação e as consultas realizadas na base de dados podem ser acessadas [no GitHub](https://github.com/FIquemSabendo/pensionistas).
+
 ## Transformações aplicadas nos dados
 
 ### Tabela com valores resumidos
@@ -29,9 +31,7 @@ Para garantir a correspondência entre os dados de cadastro e de remuneração m
 
 Para lidar com os casos em que há mais de um registro para o mesmo pensionista na tabela de cadastro (o pensionista tem múltiplo vínculos), foi adicionada uma coluna específica na ferramenta que indica a existência de várias pensões. Nesses casos, **a remuneração _total_ do pensionista é indicada em cada uma das linhas, não devendo ser somada entre diferentes linhas**.
 
-Uma versão completa da base de dados dos pensionistas do Governo Federal, incluindo as pensões civis e toda a série histórica publicada no Portal da Transparência, está disponível para download [neste link]().
-
-<!--TODO: Adicionar link da base integral-->
+Uma versão da base de dados dos pensionistas do Governo Federal em um arquivo único, incluindo as pensões civis e toda a série histórica publicada no Portal da Transparência, está disponível para download [neste link](https://drive.google.com/file/d/1e5W6fGJ5WsM_fxI18QK9JiHH-3F4sudq/view?usp=sharing).
 
 ## A história da divulgação das pensões militares e do aplicativo
 
@@ -51,11 +51,11 @@ Caso tenha alguma questão relacionada aos dados das pensões militares, entre e
 
 A Fiquem Sabendo é uma agência de dados independente e especializada na Lei de Acesso à Informação (LAI). Somos uma associação sem fins lucrativos, apartidária e independente.
 
-Todo o material publicado gratuitamente no nosso site ou na newsletter Don’t LAI to me, pode e deve ser compartilhado! Usamos a licença "Atribuição 4.0 Internacional (CC BY 4.0)", que permite a republicação/adaptação, inclusive para fins comerciais, nas seguintes condições:
+Todo o material publicado gratuitamente no aplicativo Don’t LAI to me, pode e deve ser compartilhado! Usamos a licença "Atribuição 4.0 Internacional (CC BY 4.0)", que permite a republicação/adaptação, inclusive para fins comerciais, nas seguintes condições:
 
 *Todas as republicações ou reportagens feitas a partir de dados/documentos liberados pela nossa equipe devem trazer o nome da Fiquem Sabendo no início do texto, com crédito para: “Fiquem Sabendo, agência de dados especializada na Lei de Acesso à Informação (LAI)”.*
 
-*Toda republicação deve conter link para a publicação original.*
+*Toda republicação deve conter link para o aplicativo ou para o [site](https://fiquemsabendo.com.br/) da Fiquem Sabendo.*
 
 *As postagens no Twitter e outras redes sociais sobre as reportagens republicadas devem conter menção ao perfil @_fiquemsabendo.*
 
