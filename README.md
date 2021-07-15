@@ -47,6 +47,16 @@ Para lidar com os casos em que há mais de um registro para o mesmo pensionista 
 
 Uma versão da base de dados dos pensionistas do Governo Federal em um arquivo único, incluindo as pensões civis e toda a série histórica publicada no Portal da Transparência, está disponível para download [neste link](https://drive.google.com/file/d/1e5W6fGJ5WsM_fxI18QK9JiHH-3F4sudq/view?usp=sharing).
 
+## Pontos de atenção na interpretação dos valores
+
+Em contato com a Controladoria-Geral da União, a equipe do Portal da Transparência fez alguns esclarecimentos sobre pontos que podem gerar dúvidas na interpretação dos valores repassados a pensionistas:
+
+- A "remuneração bruta" utilizada no aplicativo se baseia na coluna "Remuneração Básica Bruta (R$)" da base de dados original, que não inclui remunerações eventuais, como gratificação natalina (equivalente ao 13º salário).
+- Já a "remuneração líquida" inclui as remunerações eventuais, bem como os descontos como Imposto de Renda na fonte e outras contribuições obrigatórias. Por isso, em alguns casos é possível que a remuneração líquida seja superior à bruta.
+- Verbas indenizatórias não são consideradas nas remunerações brutas e líquidas.
+- Por padrão, pode haver um pico de pagamentos na folha do mês de junho, devido à antecipaçao da gratificação natalina pelo Governo Federal nesse mês.
+- Alguns dos registros individualizados foram públicados sem os nomes dos pensionistas e/ou dos instituidores. Isso se deve a limitações nos registros antigos. Nesses casos, é possível pedir esclarecimentos adicionais diretamente ao Ministério da Defesa por meio do sistema [Fala.BR](https://falabr.cgu.gov.br/).
+
 ## Contato
 
 Caso tenha alguma dúvida sobre o funcionamento do aplicativo, entre em contato com os desenvolvedores pelo e-mail [contato@fiquemsabendo.com.br](mailto:contato@fiquemsabendo.com.br).
