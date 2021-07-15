@@ -1,5 +1,5 @@
 ---
-title: "Graphs on-demand"
+title: "Pensionistas - Militares"
 output: 
   flexdashboard::flex_dashboard:
     orientation: columns
@@ -18,6 +18,9 @@ library(tidyr)
 library(lubridate)
 library(readr)
 # df_graph<- readRDS(file="df_trabalho.rds")
+
+#load("dados_pensionstas_militares.RData")
+
 df_graph <- read_csv(
     "https://raw.githubusercontent.com/FiquemSabendo/pensionistas/master/202102-202001_Pensionistas_DEFESA_FBarbalhoApp.csv", 
     #locale = locale(encoding = "UTF-8"),
@@ -73,16 +76,16 @@ get_date_variables <- function(df_trabalho){
 }
 ```
 
-
 Análises de ranking
 =====================================  
 
-Inputs {.sidebar}
+Inputs {.sidebar data-width=300}
 -------------------------------------
 
 
 ```{r}
 library(stringr)
+
 tipo_grafico<- c("Barra", "Linha", "Ponto")
 dateRangeInput("data",
                   "Data processamento",
@@ -103,6 +106,7 @@ selectInput ("var_fill","Escolha a variável para preencher a barra", choices =g
 selectInput ("var_filtro","Selecione tipos de beneficiários", choices = get_choices(df_graph), selected = "Tudo", multiple = TRUE)
 #radioButtons("tp_graph","Escolha o tipo de gráfico", choices =tipo_grafico, selected = tipo_grafico[1])
 checkboxInput("rotate","Rotacionar eixo", value = TRUE)
+h5("A aba Metodologia informa como citar a Fiquem Sabendo ao fazer referência aos dados dessa aplicação")
 ```
 
 
@@ -364,14 +368,27 @@ renderDataTable({
 
 
 Gráfico de análise de série temporal
-=====================================  
+=====================================
 
-Inputs {.sidebar}
+
+Inputs {.sidebar data-width=300}
 -------------------------------------
 
+```{css}
+
+h1, h2, h3, h4, h5, h6 {
+
+  font-weight:600;
+
+}
+
+```
 
 ```{r}
 library(stringr)
+
+
+
 dateRangeInput("data_st",
                   "Intervalo da série",
                   min = "2020-01-01",
@@ -388,12 +405,16 @@ selectInput ("var_op_st","Que operação você deseja fazer com a variável do e
 selectInput ("var_group","Escolha a variável para agrupamento", choices =c("Nenhuma",get_categoric_variables(df_graph)) ,selected = "Nenhuma",multiple = FALSE)
 selectInput ("var_filtro_st","Selecione tipos de beneficiários", choices = get_choices(df_graph) ,selected = "tudo",multiple = TRUE)
 sliderInput("num_elementos","Escolha o número de elementos a exibir no gráfico pelo ranking",1,100,10)
+
+h5("A aba Metodologia informa como citar a Fiquem Sabendo ao fazer referência aos dados dessa aplicação")
+
 ```
+
+
 
 Column {.tabset .tabset-fade}
 -----------------------------------------------------------------------
 ### Construa a sua série temporal
-
 
 
 ```{r}
@@ -575,7 +596,7 @@ renderDygraph({
 # })
 ```
 
-### Manipule os dados de seu filtro
+### Manipule os dados de seu filtro 
 ```{r}
 library(DT)
 
@@ -655,3 +676,121 @@ renderDataTable({
   
 })
 ```
+
+Dados para o último mês disponível
+=====================================  
+
+### Os pensionistas com mais de um vínculo não devem ter somados os valores de **rendimento** para se chegar às suas remunerações **bruta** e **líquida**. Os valores apresentados correspondem à soma de todos os vínculos.
+
+
+```{r}
+
+#cadastro<- data.table::fread(file="202102_Cadastro.csv")
+#remuneracao<- data.table::fread(file="202102_Remuneracao.csv")
+#varios_vinculos <- readRDS("varios_vinculos.RDS")
+# 
+# save(list = c("cadastro", "remuneracao"), file = "dados_pensionstas_militares.RData")
+
+microdados <- readRDS("microdados.RDS")
+
+
+
+renderDataTable({
+  
+  
+  
+  # remuneracao %>%
+  #    mutate(`REMUNERAÇÃO BÁSICA BRUTA (R$)`= str_replace(`REMUNERAÇÃO BÁSICA BRUTA (R$)`,",","."),
+  #              `REMUNERAÇÃO APÓS DEDUÇÕES OBRIGATÓRIAS (R$)`= str_replace(`REMUNERAÇÃO APÓS DEDUÇÕES OBRIGATÓRIAS (R$)`,",","."),
+  #            `REMUNERAÇÃO APÓS DEDUÇÕES OBRIGATÓRIAS (R$)`=  as.numeric(`REMUNERAÇÃO APÓS DEDUÇÕES OBRIGATÓRIAS (R$)`)
+  #           ) %>%
+  #   filter(`REMUNERAÇÃO APÓS DEDUÇÕES OBRIGATÓRIAS (R$)`<0) %>%
+  #   summarise(total_negativo= sum(`REMUNERAÇÃO APÓS DEDUÇÕES OBRIGATÓRIAS (R$)`),
+  #             quantidade = n())
+
+  # varios_vinculos<-
+  # cadastro %>%
+  #   group_by(Id_SERVIDOR_PORTAL) %>%
+  #   summarise(
+  #     quantidade_vinculos = n()
+  #   ) %>%
+  #   ungroup() %>%
+  #   filter(quantidade_vinculos>1)
+  
+  #saveRDS(varios_vinculos, "varios_vinculos.RDS")
+  
+  # microdados<-
+  # cadastro %>%
+  #   filter(!is.na(CPF),
+  #          CPF != "",
+  #          NOME_INSTITUIDOR_PENSAO != "",
+  #          !is.na(NOME_INSTITUIDOR_PENSAO)) %>%
+  #   inner_join(
+  #     remuneracao %>%
+  #       mutate(`REMUNERAÇÃO BÁSICA BRUTA (R$)`= str_replace(`REMUNERAÇÃO BÁSICA BRUTA (R$)`,",","."),
+  #              `REMUNERAÇÃO APÓS DEDUÇÕES OBRIGATÓRIAS (R$)`= str_replace(`REMUNERAÇÃO APÓS DEDUÇÕES OBRIGATÓRIAS (R$)`,",","."))%>%
+  #       rename(`Remuneração bruta` = `REMUNERAÇÃO BÁSICA BRUTA (R$)`,
+  #              `Remuneração líquida`= `REMUNERAÇÃO APÓS DEDUÇÕES OBRIGATÓRIAS (R$)`) %>%
+  #       select(Id_SERVIDOR_PORTAL, `Remuneração bruta`, `Remuneração líquida`) 
+  #   ) %>% 
+  #   left_join(varios_vinculos) %>%
+  #   mutate(`Vários vínculos` = ifelse(is.na(quantidade_vinculos),"Não", "Sim")) %>%
+  #   arrange(NOME_INSTITUIDOR_PENSAO) %>%
+  #   mutate(`Instituidor da Pensão` = factor(NOME_INSTITUIDOR_PENSAO),
+  #          `Pensionsta` = factor(NOME),
+  #          `Tipo de Beneficiário`= factor(TIPO_PENSAO), 
+  #          `Orgão do instituidor` = factor(ORG_LOTACAO_INSTITUIDOR_PENSAO),
+  #          `Cargo do instituidor` = factor(DESCRICAO_CARGO_INSTITUIDOR_PENSAO),
+  #          `Remuneração bruta` =  as.numeric(`Remuneração bruta`),
+  #          `Remuneração líquida`=  as.numeric(`Remuneração líquida`)
+  #          ) %>%
+  #   select(`Instituidor da Pensão`,
+  #          `Pensionsta`,
+  #          `Tipo de Beneficiário`,
+  #          `Orgão do instituidor`,
+  #          `Cargo do instituidor`,
+  #          `Remuneração bruta`,
+  #          `Remuneração líquida`,
+  #          `Vários vínculos`
+  #          
+  #          )
+    
+   #print("gerou microdados")
+   
+   #saveRDS(microdados, "microdados.RDS")
+   
+   
+   microdados %>%
+   DT::datatable(
+      filter = "top",
+      rownames = FALSE,
+      fillContainer = TRUE,
+      
+      extensions = 'Buttons', options = list(
+        dom = 'Bfrtip',
+        columnDefs = list(list(targets = 7, className = 'dt-center')),
+        #columnDefs = list(list(targets = c(-13), searchable = TRUE)),
+        pageLength = 50,
+        buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
+      )
+    )%>% formatRound(6:7,digits = 2, mark=".", dec.mark= ",")
+}
+  
+)
+```
+
+Metodologia
+=====================================  
+```{r}
+renderUI({
+  
+   tags$iframe(src = "https://fiquemsabendo.github.io/pensionistas-metodologia.github.io/", height="100%", width="100%")
+   #includeHTML("www/estoria_gfs.html")
+  
+})
+  
+
+
+
+```
+
