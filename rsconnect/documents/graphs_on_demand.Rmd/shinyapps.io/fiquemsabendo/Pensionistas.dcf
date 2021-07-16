@@ -5,8 +5,8 @@ account: fiquemsabendo
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 3864832
-bundleId: 4789372
+bundleId: 4824311
 url: https://fiquemsabendo.shinyapps.io/Pensionistas/
-when: 1625507704.53616
+when: 1626393702.93293
 asMultiple: FALSE
 asStatic: FALSE
