@@ -9,11 +9,10 @@ e carregados em banco de dados PostgreSQL 11.2.
 
 Veja o arquivo README.md para mais informações.
 */
-
-
 -- Colunas no arquivo final:
 --     "Data Processamento": data de referência do pagamento da pensão
---     "TIPO DE BENEFICIARIO" relação entre beneficiário e instituidor da 
+--     "CATEGORIA DA PENSAO": se a pensão é militar ou civil
+--     "TIPO DE BENEFICIARIO": relação entre beneficiário e instituidor da 
 --     pensão)
 --     "ORGAO INSTITUIDOR": órgão responsável pela pensão
 --     "CARGO DO INSTITUIDOR": último cargo ocupado pelo instituidor da pensão
@@ -30,50 +29,17 @@ Veja o arquivo README.md para mais informações.
 --     "min_data_inicio_pensao": data de instituição da pensão mais antiga
 --     de um pensionista com as características listadas.
 select
-    concat(r.ano, '-', lpad(r.mes::text, 2, '0'), '-01') as "Data Processamento",
-    (case when c.tipo_pensao like '%#%' then 'Vários' else c.tipo_pensao end) as "TIPO DE BENEFICIARIO",
-    (case when c.org_lotacao_instituidor_pensao like '%#%' then 'Vários' else c.org_lotacao_instituidor_pensao end) as "ORGAO INSTITUIDOR",
-    (case when c.descricao_cargo_instituidor_pensao like '%#%' then 'Vários' else c.descricao_cargo_instituidor_pensao end) as "CARGO DO INSTITUIDOR",
+    concat(ano, '-', lpad(mes::text, 2, '0'), '-01') as "Data Processamento",
+    (case when sistema_origem = 'DEFESA' then 'Militar' else 'Civil' end) as "CATEGORIA DA PENSAO",
+    (case when tipo_pensao like '%;%' then 'Vários' else tipo_pensao end) as "TIPO DE BENEFICIARIO",
+    (case when org_lotacao_instituidor_pensao like '%;%' then 'Vários' else org_lotacao_instituidor_pensao end) as "ORGAO INSTITUIDOR",
+    (case when descricao_cargo_instituidor_pensao like '%;%' then 'Vários' else descricao_cargo_instituidor_pensao end) as "CARGO DO INSTITUIDOR",
+    sum(remuneracao_basica_bruta_brl) as total_rendimento_bruto,
+    max(remuneracao_basica_bruta_brl) as max_rendimento_bruto,
+    sum(remuneracao_apos_deducoes_obrigatorias_brl) as total_rendimento_iquido,
+    max(remuneracao_apos_deducoes_obrigatorias_brl) as max_rendimento_liquido,
+    min(data_inicio_pensao)::text as min_data_inicio_pensao,
     count(*) as quantidade
-    sum(r.remuneracao_basica_bruta_brl) as total_rendimento_bruto,
-    max(r.remuneracao_basica_bruta_brl) as max_rendimento_bruto,
-    sum(r.remuneracao_apos_deducoes_obrigatorias_brl) as total_rendimento_iquido,
-    max(r.remuneracao_apos_deducoes_obrigatorias_brl) as max_rendimento_liquido,
-    min(c.data_inicio_pensao)::text as min_data_inicio_pensao,
-
-from (
-    -- Tabela de cadastro, com informações sobre o pensionista, o instituidor
-    -- e o vínculo que gerou a pensão.
-    select
-        ano,
-        mes,
-        id_servidor_portal,
-        min(data_inicio_pensao) as data_inicio_pensao,
-        string_agg(distinct descricao_cargo_instituidor_pensao::varchar, '#') as descricao_cargo_instituidor_pensao,
-        string_agg(distinct tipo_pensao::varchar, '#') as tipo_pensao,
-        string_agg(distinct org_lotacao_instituidor_pensao::varchar, '#') as org_lotacao_instituidor_pensao
-    from pensionista_cadastro
-    where sistema_origem = 'DEFESA'
-    group by ano, mes, id_servidor_portal
-) as c
-right join (
-    -- Tabela de remuneração, com os valores brutos e líquidos recebidos em
-    -- cada mês.
-    select *
-    from pensionista_remuneracao
-    where sistema_origem = 'DEFESA'
-) as r
-on
-    -- Para conectar as tabelas, são utilizados os campos de ano e mês do
-    -- pagamento e o identificador único do beneficiário no Portal da
-    -- Transparência.
-    c.ano = r.ano
-    and c.mes = r.mes
-    and c.id_servidor_portal = r.id_servidor_portal
-group by
-    r.ano,
-    r.mes,
-    "TIPO DE BENEFICIARIO",
-    "ORGAO INSTITUIDOR",
-    "CARGO DO INSTITUIDOR"
-;
+-- Tabela com informações unificadas de cadastro, remuneração e observações
+from pensionista_final
+group by ano, mes, "CATEGORIA DA PENSAO", "TIPO DE BENEFICIARIO", "ORGAO INSTITUIDOR", "CARGO DO INSTITUIDOR";
