@@ -18,7 +18,7 @@ O arquivo [`graphs_on_demand.Rmd`](./graphs_on_demand.Rmd) contém as instruçõ
 
 A interface gráfica carrega os dados resumidos do Portal da Transparência da tabela [`consolidated_data.csv`](./consolidated_data.csv) (ver explicação sobre as transformações realizadas [abaixo](#tabela-com-valores-resumidos)). 
 
-Esses dados são retirados de um banco de dados PostgreSQL que importa os dados do Portal da Transparência após leitura e pré-processamento realizados com [este conjunto](https://github.com/turicas/transparencia-gov-br/tree/develop/pensionista) de scripts. A consulta para extração dos dados resumidos do banco de dados foi reproduzida com comentários no arquivo [`query_new.sql`](./query_new.sql).
+Esses dados são retirados de um banco de dados PostgreSQL que importa os dados do Portal da Transparência após leitura e pré-processamento realizados com [este conjunto](https://github.com/turicas/transparencia-gov-br/tree/develop/pensionista) de scripts. A consulta para extração dos dados resumidos do banco de dados foi reproduzida com comentários no arquivo [`query_consolidated_data.sql`](./query_consolidated_data.sql).
 
 ## Transformações aplicadas nos dados
 
