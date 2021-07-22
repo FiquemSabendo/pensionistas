@@ -22,7 +22,7 @@ library(readr)
 #load("dados_pensionstas_militares.RData")
 
 df_graph <- read_csv(
-    "https://raw.githubusercontent.com/FiquemSabendo/pensionistas/master/consolidated_data.csv", 
+    "consolidated_data.csv", 
     #locale = locale(encoding = "UTF-8"),
     col_types = cols(
         total_rendimento_bruto = col_number(), 
@@ -686,7 +686,7 @@ Dados para o último mês disponível
 ```{r}
 
 microdados <- data.table::fread(
-  "https://raw.githubusercontent.com/FiquemSabendo/pensionistas/master/microdata.csv",
+  "microdata.csv",
   colClasses=list(
     character=c("Instituidor da Pensão", "Pensionista"),
     factor=c("Categoria", "Tipo de Beneficiário", "Orgão do instituidor", "Cargo do instituidor"),
