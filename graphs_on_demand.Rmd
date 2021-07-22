@@ -685,80 +685,17 @@ Dados para o último mês disponível
 
 ```{r}
 
-#cadastro<- data.table::fread(file="202102_Cadastro.csv")
-#remuneracao<- data.table::fread(file="202102_Remuneracao.csv")
-#varios_vinculos <- readRDS("varios_vinculos.RDS")
-# 
-# save(list = c("cadastro", "remuneracao"), file = "dados_pensionstas_militares.RData")
-
-microdados <- readRDS("microdados.RDS")
-
+microdados <- data.table::fread(
+  "https://raw.githubusercontent.com/FiquemSabendo/pensionistas/master/microdata.csv",
+  colClasses=list(
+    character=c("Instituidor da Pensão", "Pensionista"),
+    factor=c("Categoria", "Tipo de Beneficiário", "Orgão do instituidor", "Cargo do instituidor"),
+    numeric=c("Remuneração bruta", "Remuneração líquida")
+ )
+)
 
 
 renderDataTable({
-  
-  
-  
-  # remuneracao %>%
-  #    mutate(`REMUNERAÇÃO BÁSICA BRUTA (R$)`= str_replace(`REMUNERAÇÃO BÁSICA BRUTA (R$)`,",","."),
-  #              `REMUNERAÇÃO APÓS DEDUÇÕES OBRIGATÓRIAS (R$)`= str_replace(`REMUNERAÇÃO APÓS DEDUÇÕES OBRIGATÓRIAS (R$)`,",","."),
-  #            `REMUNERAÇÃO APÓS DEDUÇÕES OBRIGATÓRIAS (R$)`=  as.numeric(`REMUNERAÇÃO APÓS DEDUÇÕES OBRIGATÓRIAS (R$)`)
-  #           ) %>%
-  #   filter(`REMUNERAÇÃO APÓS DEDUÇÕES OBRIGATÓRIAS (R$)`<0) %>%
-  #   summarise(total_negativo= sum(`REMUNERAÇÃO APÓS DEDUÇÕES OBRIGATÓRIAS (R$)`),
-  #             quantidade = n())
-
-  # varios_vinculos<-
-  # cadastro %>%
-  #   group_by(Id_SERVIDOR_PORTAL) %>%
-  #   summarise(
-  #     quantidade_vinculos = n()
-  #   ) %>%
-  #   ungroup() %>%
-  #   filter(quantidade_vinculos>1)
-  
-  #saveRDS(varios_vinculos, "varios_vinculos.RDS")
-  
-  # microdados<-
-  # cadastro %>%
-  #   filter(!is.na(CPF),
-  #          CPF != "",
-  #          NOME_INSTITUIDOR_PENSAO != "",
-  #          !is.na(NOME_INSTITUIDOR_PENSAO)) %>%
-  #   inner_join(
-  #     remuneracao %>%
-  #       mutate(`REMUNERAÇÃO BÁSICA BRUTA (R$)`= str_replace(`REMUNERAÇÃO BÁSICA BRUTA (R$)`,",","."),
-  #              `REMUNERAÇÃO APÓS DEDUÇÕES OBRIGATÓRIAS (R$)`= str_replace(`REMUNERAÇÃO APÓS DEDUÇÕES OBRIGATÓRIAS (R$)`,",","."))%>%
-  #       rename(`Remuneração bruta` = `REMUNERAÇÃO BÁSICA BRUTA (R$)`,
-  #              `Remuneração líquida`= `REMUNERAÇÃO APÓS DEDUÇÕES OBRIGATÓRIAS (R$)`) %>%
-  #       select(Id_SERVIDOR_PORTAL, `Remuneração bruta`, `Remuneração líquida`) 
-  #   ) %>% 
-  #   left_join(varios_vinculos) %>%
-  #   mutate(`Vários vínculos` = ifelse(is.na(quantidade_vinculos),"Não", "Sim")) %>%
-  #   arrange(NOME_INSTITUIDOR_PENSAO) %>%
-  #   mutate(`Instituidor da Pensão` = factor(NOME_INSTITUIDOR_PENSAO),
-  #          `Pensionsta` = factor(NOME),
-  #          `Tipo de Beneficiário`= factor(TIPO_PENSAO), 
-  #          `Orgão do instituidor` = factor(ORG_LOTACAO_INSTITUIDOR_PENSAO),
-  #          `Cargo do instituidor` = factor(DESCRICAO_CARGO_INSTITUIDOR_PENSAO),
-  #          `Remuneração bruta` =  as.numeric(`Remuneração bruta`),
-  #          `Remuneração líquida`=  as.numeric(`Remuneração líquida`)
-  #          ) %>%
-  #   select(`Instituidor da Pensão`,
-  #          `Pensionsta`,
-  #          `Tipo de Beneficiário`,
-  #          `Orgão do instituidor`,
-  #          `Cargo do instituidor`,
-  #          `Remuneração bruta`,
-  #          `Remuneração líquida`,
-  #          `Vários vínculos`
-  #          
-  #          )
-    
-   #print("gerou microdados")
-   
-   #saveRDS(microdados, "microdados.RDS")
-   
    
    microdados %>%
    DT::datatable(
@@ -773,7 +710,7 @@ renderDataTable({
         pageLength = 50,
         buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
       )
-    )%>% formatRound(6:7,digits = 2, mark=".", dec.mark= ",")
+    )%>% formatRound(7:8,digits = 2, mark=".", dec.mark= ",")
 }
   
 )
