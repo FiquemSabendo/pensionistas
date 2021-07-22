@@ -24,7 +24,7 @@ Esses dados são retirados de um banco de dados PostgreSQL que importa os dados 
 
 ### Tabela com valores resumidos
 
-Para as ferramentas [`Análises de ranking`](https://fabdev.shinyapps.io/pensionistas_militares/#section-an%C3%A1lises-de-ranking) e [`Gráfico de análise de série temporal`](https://fabdev.shinyapps.io/pensionistas_militares/#section-gr%C3%A1fico-de-an%C3%A1lise-de-s%C3%A9rie-temporal), foi elaborada uma versão sintética dos dados disponibilizados no portal da transparência. Essa versão resumida contém: 
+Para as ferramentas [`Análises de ranking`](https://fiquemsabendo.shinyapps.io/Pensionistas/#section-an%C3%A1lises-de-ranking) e [`Gráfico de análise de série temporal`](https://fiquemsabendo.shinyapps.io/Pensionistas/#section-gr%C3%A1fico-de-an%C3%A1lise-de-s%C3%A9rie-temporal), foi elaborada uma versão sintética dos dados disponibilizados no portal da transparência. Essa versão resumida contém: 
 
 - Todas as combinações de tipo de beneficiário (isto é, o vínculo entre beneficiário e servidor que instituiu a pensão), órgão e cargo do servidor instituidor, e quantidade de vínculos mantidos pelo pensionista, por mês do pagamento.
 - Estatísticas básicas dos valores pagos pela União a pensionistas de cada uma dessas combinações, incluindo:
@@ -39,7 +39,7 @@ A planilha com os dados resumidos está disponível para consulta e download em 
 
 ### Tabela detalhada por pensionista
 
-A ferramenta [`Dados para o último mês disponível`](https://fabdev.shinyapps.io/pensionistas_militares/#section-dados-para-o-%C3%BAltimo-m%C3%AAs-dispon%C3%ADvel) possibilita a busca discriminada por nome do pensionista ou do instituidor da pensão. Para isso, utiliza um subconjunto das colunas geradas pelo cruzamento das tabelas `Cadastro.csv` e `Remuneracao.csv` mais recentes disponibilizadas no Portal da Transparência para os pensionistas do Ministério da Defesa.
+A ferramenta [`Dados para o último mês disponível`](https://fiquemsabendo.shinyapps.io/Pensionistas/#section-dados-para-o-%C3%BAltimo-m%C3%AAs-dispon%C3%ADvel) possibilita a busca discriminada por nome do pensionista ou do instituidor da pensão. Para isso, utiliza um subconjunto das colunas geradas pelo cruzamento das tabelas `Cadastro.csv` e `Remuneracao.csv` mais recentes disponibilizadas no Portal da Transparência para os pensionistas do Ministério da Defesa.
 
 Para garantir a correspondência entre os dados de cadastro e de remuneração mesmo em casos de pensionistas homônimos ou quando há restrição de dados pessoais (por exemplo, quando o pensionista é menor de 16 anos), a coluna de identificação do pensionista no Portal da Transparência (coluna `id_servidor_portal`) é utilizada como chave comum entre as duas tabelas.
 
