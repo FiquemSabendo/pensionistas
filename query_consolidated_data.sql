@@ -1,5 +1,5 @@
 /*
-GERAÇÃO DE PLANILHA COM DADOS RESUMIDOS DE PENSÕES MILITARES
+GERAÇÃO DE PLANILHA COM DADOS RESUMIDOS DE PENSÕES DO GOVERNO FEDERAL
 
 Dados obtidos do Portal da Transparência 
 (http://transparencia.gov.br/download-de-dados/servidores), 
