@@ -22,7 +22,7 @@ library(readr)
 #load("dados_pensionstas_militares.RData")
 
 df_graph <- read_csv(
-    "https://raw.githubusercontent.com/FiquemSabendo/pensionistas/master/202102-202001_Pensionistas_DEFESA_FBarbalhoApp.csv", 
+    "https://raw.githubusercontent.com/FiquemSabendo/pensionistas/master/consolidated_data.csv", 
     #locale = locale(encoding = "UTF-8"),
     col_types = cols(
         total_rendimento_bruto = col_number(), 

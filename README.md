@@ -16,7 +16,7 @@ Com a divulgação dos dados completos pela CGU, o aplicativo foi atualizado par
 
 O arquivo [`graphs_on_demand.Rmd`](./graphs_on_demand.Rmd) contém as instruções em Rmarkdown para rodar a interface gráfica do aplicativo, por meio de uma ferramenta como o [shinnyapps.io](https://www.shinyapps.io/).
 
-A interface gráfica carrega os dados resumidos do Portal da Transparência da tabela [`202102-202001_Pensionistas_DEFESA_FBarbalhoApp.csv`](./202102-202001_Pensionistas_DEFESA_FBarbalhoApp.csv) (ver explicação sobre as transformações realizadas [abaixo](#tabela-com-valores-resumidos)). 
+A interface gráfica carrega os dados resumidos do Portal da Transparência da tabela [`consolidated_data.csv`](./consolidated_data.csv) (ver explicação sobre as transformações realizadas [abaixo](#tabela-com-valores-resumidos)). 
 
 Esses dados são retirados de um banco de dados PostgreSQL que importa os dados do Portal da Transparência após leitura e pré-processamento realizados com [este conjunto](https://github.com/turicas/transparencia-gov-br/tree/develop/pensionista) de scripts. A consulta para extração dos dados resumidos do banco de dados foi reproduzida com comentários no arquivo [`query_new.sql`](./query_new.sql).
 
@@ -35,7 +35,7 @@ Para as ferramentas [`Análises de ranking`](https://fabdev.shinyapps.io/pension
 
 Nesse caso, pensionistas com mais de uma pensão militar tiveram apenas a sua remuneração consolidada considerada, sendo separados dos demais por meio da variável `NUMERO DE VINCULOS`.
 
-A planilha com os dados resumidos está disponível para consulta e download em formato CSV por meio [deste link](https://raw.githubusercontent.com/FiquemSabendo/pensionistas/master/202102-202001_Pensionistas_DEFESA_FBarbalhoApp.csv).
+A planilha com os dados resumidos está disponível para consulta e download em formato CSV por meio [deste link](https://raw.githubusercontent.com/FiquemSabendo/pensionistas/master/consolidated_data.csv).
 
 ### Tabela detalhada por pensionista
 
