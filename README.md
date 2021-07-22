@@ -1,6 +1,6 @@
 # Metodologia
 
-Este repositório contém o código-fonte do [aplicativo](https://fiquemsabendo.shinyapps.io/Pensionistas/) que permite a visualização de informações relativas a pensões militares do Governo Federal. 
+Este repositório contém o código-fonte do [aplicativo](https://fiquemsabendo.shinyapps.io/Pensionistas/) que permite a visualização de informações relativas a pensões civis e militares do Governo Federal. 
 
 Os dados utilizados são provenientes do [Portal da Transparência](http://transparencia.gov.br/download-de-dados/servidores). A responsabilidade pelo preenchimento dos dados é do Ministério da Defesa, que envia mensalmente as informações à Controladoria-Geral da União (CGU) para consolidação e disponibilização no formato utilizado no Portal.
 
@@ -61,7 +61,7 @@ Em contato com a Controladoria-Geral da União, a equipe do Portal da Transparê
 
 Caso tenha alguma dúvida sobre o funcionamento do aplicativo, entre em contato com os desenvolvedores pelo e-mail [contato@fiquemsabendo.com.br](mailto:contato@fiquemsabendo.com.br).
 
-Caso tenha alguma questão relacionada aos dados das pensões militares, entre em contato diretamente com a Controladoria-Geral da União, responsável pela divulgação nos dados no Portal da Transparência. Para sugestões, dúvidas ou informações, entre em contato com o órgão por meio do sistema [Fala.BR](https://falabr.cgu.gov.br/).
+Caso tenha alguma questão relacionada aos dados das pensões, entre em contato diretamente com a Controladoria-Geral da União, responsável pela divulgação nos dados no Portal da Transparência. Para sugestões, dúvidas ou informações, entre em contato com o órgão por meio do sistema [Fala.BR](https://falabr.cgu.gov.br/).
 
 ## Compartilhando as informações do aplicativo
 
