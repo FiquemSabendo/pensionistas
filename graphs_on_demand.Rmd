@@ -106,7 +106,7 @@ selectInput ("var_fill","Escolha a variável para preencher a barra", choices =g
 selectInput ("var_filtro","Selecione tipos de beneficiários", choices = get_choices(df_graph), selected = "Tudo", multiple = TRUE)
 #radioButtons("tp_graph","Escolha o tipo de gráfico", choices =tipo_grafico, selected = tipo_grafico[1])
 checkboxInput("rotate","Rotacionar eixo", value = TRUE)
-h5("A aba Metodologia informa como citar a Fiquem Sabendo ao fazer referência aos dados dessa aplicação")
+h5("A aba Sobre informa como citar a Fiquem Sabendo ao fazer referência aos dados dessa aplicação")
 ```
 
 
@@ -406,7 +406,7 @@ selectInput ("var_group","Escolha a variável para agrupamento", choices =c("Nen
 selectInput ("var_filtro_st","Selecione tipos de beneficiários", choices = get_choices(df_graph) ,selected = "tudo",multiple = TRUE)
 sliderInput("num_elementos","Escolha o número de elementos a exibir no gráfico pelo ranking",1,100,10)
 
-h5("A aba Metodologia informa como citar a Fiquem Sabendo ao fazer referência aos dados dessa aplicação")
+h5("A aba Sobre informa como citar a Fiquem Sabendo ao fazer referência aos dados dessa aplicação")
 
 ```
 
@@ -716,7 +716,7 @@ renderDataTable({
 )
 ```
 
-Metodologia
+Sobre
 =====================================  
 ```{r}
 renderUI({
